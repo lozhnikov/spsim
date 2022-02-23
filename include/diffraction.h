@@ -74,13 +74,18 @@ float * get_HKL_list_for_3d_detector(CCD * det, Experiment * exp,int * HKL_list_
 
 /* Computes the diffraction pattern of a given structure on a given set of HKL points */
 Diffraction_Pattern * compute_pattern_on_list(Molecule * mol, float * HKL_list, int HKL_list_size, float B,Experiment * exp,Options * opts);
+Diffraction_Pattern * compute_pattern_on_list_ff(Molecule * mol, float * HKL_list, int HKL_list_size, float B,Experiment * exp,Options * opts);
 
 #ifdef _USE_CUDA
 Diffraction_Pattern * cuda_compute_pattern_on_list(Molecule * mol, float * HKL_list, int HKL_list_size, float B,Experiment * exp,Options * opts);
 Diffraction_Pattern * cuda_compute_pattern_on_list2(Molecule * mol, float * HKL_list, int HKL_list_size, float B,Experiment * exp,Options * opts);
+
+Diffraction_Pattern * cuda_compute_pattern_on_list_ff(Molecule * mol, float * HKL_list, int HKL_list_size, float B,Experiment * exp,Options * opts);
+Diffraction_Pattern * cuda_compute_pattern_on_list2_ff(Molecule * mol, float * HKL_list, int HKL_list_size, float B,Experiment * exp,Options * opts);
 #endif
 
 Diffraction_Pattern * vector_compute_pattern_on_list(Molecule * mol, float * HKL_list, int HKL_list_size, float B,Experiment * exp,Options * opts);
+Diffraction_Pattern * vector_compute_pattern_on_list_ff(Molecule * mol, float * HKL_list, int HKL_list_size, float B,Experiment * exp,Options * opts);
 
 void calculate_pixel_solid_angle(CCD * det);
 
@@ -94,10 +99,12 @@ Diffraction_Pattern * load_pattern_from_file(CCD * det,char * filename,
 void write_hkl_grid(float * list, Molecule * mol,CCD * det);
 
 Diffraction_Pattern * compute_pattern_by_fft(Molecule * mol, CCD * det, Experiment * exp,float B);
+Diffraction_Pattern * compute_pattern_by_fft_ff(Molecule * mol, CCD * det, Experiment * exp,float B);
 
 #ifdef NFFT_SUPPORT
 // THIS FUNCTION IS NEVER CALLED
 Diffraction_Pattern * compute_pattern_by_nfft(Molecule * mol, CCD * det, Experiment * exp, float B,float * HKL_list,Options * opts);
+Diffraction_Pattern * compute_pattern_by_nfft_ff(Molecule * mol, CCD * det, Experiment * exp, float B,float * HKL_list,Options * opts);
 Diffraction_Pattern * compute_pattern_on_list_by_nfft(Molecule * mol,float * HKL_list, int HKL_list_size, CCD * det,float B,Options * opts);
 #endif
 

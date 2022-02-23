@@ -20,10 +20,16 @@ def get_molecule_from_opts(opts):
     mol = get_molecule(opts)
     return mol
     
-def get_molecule_from_atoms(atomic_numbers = None, atomic_positions = None):
+def get_molecule_from_atoms(atomic_numbers = None, atomic_positions = None, atomic_formfactors = None):
     mol = alloc_mol()
-    for j,(x,y,z) in zip(atomic_numbers, atomic_positions):
-        add_atom_to_mol(mol, int(j), float(x), float(y), float(z))
+
+    if atomic_formfactors is None:
+      for j,(x,y,z) in zip(atomic_numbers, atomic_positions):
+          add_atom_to_mol(mol, int(j), float(x), float(y), float(z))
+    else:
+      for j,(x,y,z), (a1, b1, a2, b2, a3, b3, a4, b4, c) in zip(atomic_numbers, atomic_positions, atomic_formfactors):
+          add_atom_to_mol_ff(mol, int(j), float(x), float(y), float(z), float(a1), float(b1), float(a2), float(b2), float(a3), float(b3), float(a4), float(b4), float(c))
+
     return mol
 
 def get_atoms_from_molecule(mol):

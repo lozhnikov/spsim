@@ -55,6 +55,7 @@ typedef struct{
   /* may optionally contain the boundaries of pos */
   /* atoms are represented by delta functions*/
   int delta_atoms;
+  float* atomic_formfactors;
 }Molecule;
 
 typedef struct{

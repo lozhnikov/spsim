@@ -35,6 +35,7 @@ Molecule * get_Molecule_from_formula(Chem_Formula * form, Options * opts){
   Molecule * res = malloc(sizeof(Molecule));
   float distance;
   res->atomic_number = NULL;
+  res->atomic_formfactors = NULL;
   res->pos = NULL;
   res->natoms = 0;
   for(i = 0;i<form->n_elements;i++){
@@ -81,6 +82,7 @@ Molecule * get_Molecule_from_pdb(char * filename){
   }
   res->atomic_number = malloc(sizeof(int)*maxnatoms);
   res->pos = malloc(3*sizeof(float)*maxnatoms);
+  res->atomic_formfactors = NULL;
   res->natoms = 0;
 
   get_legal_atom_names();
@@ -311,6 +313,7 @@ Molecule * alloc_mol() {
   mol->natoms = 0;
   mol->atomic_number = NULL;
   mol->pos = NULL;
+  mol->atomic_formfactors = NULL;
   return mol;
 }
 
@@ -325,7 +328,31 @@ void add_atom_to_mol(Molecule * mol, int atomic_number, float x, float y, float 
   mol->pos[i*3+2] = z;
 }
 
+void add_atom_to_mol_ff(Molecule * mol, int atomic_number, float x, float y, float z,
+                     float a1, float b1, float a2, float b2, float a3, float b3,
+                     float a4, float b4, float c) {
+  int i = mol->natoms;
+  mol->natoms++;
+  mol->atomic_number = realloc(mol->atomic_number,sizeof(int)*mol->natoms);
+  mol->pos = realloc(mol->pos,sizeof(float)*mol->natoms*3);
+  mol->atomic_formfactors = realloc(mol->atomic_formfactors, sizeof(float)*mol->natoms * 9);
+  mol->atomic_number[i] = atomic_number;
+  mol->pos[i*3+0] = x;
+  mol->pos[i*3+1] = y;
+  mol->pos[i*3+2] = z;
+  mol->atomic_formfactors[i * 9 + 0] = a1;
+  mol->atomic_formfactors[i * 9 + 1] = b1;
+  mol->atomic_formfactors[i * 9 + 2] = a2;
+  mol->atomic_formfactors[i * 9 + 3] = b2;
+  mol->atomic_formfactors[i * 9 + 4] = a3;
+  mol->atomic_formfactors[i * 9 + 5] = b3;
+  mol->atomic_formfactors[i * 9 + 6] = a4;
+  mol->atomic_formfactors[i * 9 + 7] = b4;
+  mol->atomic_formfactors[i * 9 + 8] = c;
+}
+
 void free_mol(Molecule * mol) {
+  free(mol->atomic_formfactors);
   free(mol->atomic_number);
   free(mol->pos);
   free(mol);
@@ -346,6 +373,8 @@ Molecule * make_mol(Image * atomic_number, Image * pos) {
   mol = alloc_mol();
   mol->natoms = N;
   mol->atomic_number = realloc(mol->atomic_number,sizeof(int)*N);
+  mol ->atomic_formfactors = NULL;
+
   mol->pos = realloc(mol->pos,sizeof(float)*N*3);
   for (i = 0; i < N; i++) {
     mol->atomic_number[i] = (int) atomic_number->image->data[i].re;
